@@ -1,0 +1,46 @@
+Group Work Assignment 2 - A2-Group 29
+=====================================
+
+Task 8 (Design) - Change Request
+
+At first, our implementation for the Advantages/Disadvantages calculations consisted on using an Enum, `EffectiveAttack.java`,
+in which we linked the Attacker type with their respective advantage.
+
+This turned out to be a useful implementation for the first first three types (Fire, Grass, and Water) since it
+was a classic "Rock, Paper, Scissors" strategy. However, this approach is no longer maintainable if you have types
+with multiple Advantages/Disadvantages.
+
+Therefore, we came to the conclusion that using a 2-Dimensional Array was a better approach. But that also meant
+that we needed to change the previous Enum and its implementation on the Pokemon.attack() method.
+
+We decided to go with the following format:
+
+format: `attack: type` => `mapValue: integer`
+
+Where mapValue is an integer that we assign to every `Pokemon Type` to give them a Matrix Form Representation.
+
+    BUG(0),
+    DRAGON(1),
+    ...
+    NORMAL(7);
+
+public static final float[][] DAMAGE_MULTIPLIER_MATRIX = {
+        { 1,    1,      1,      .5f,    2,      1,      1,      1},
+        { 1,    2,      1,      1,      1,      1,      1,      1},
+        { 1,    .5f,    .5f,    1,      .5f,    1,      2,      1},
+        { 2,    .5f,    1,      .5f,    2,      2,      .5f,    1},
+        { .5f,  .5f,    1,      .5f,    .5f,    1,      2,      1},
+        { 1,    2,      1,      .5f,    2,      .5f,    .5f,    1},
+        { 1,    .5f,    1,      2,      .5f,    1,      .5f,    1},
+        { 1,    1,      1,      1,      1,      1,      1,      1},
+    };
+
+So then, if we want to calculate the effectiveness of the attack, we do as follows:
+
+`output DamageMultiplier = DAMAGE_MULTIPLIER_MATRIX[AttackerType][TargetType]`
+
+One clear advantage of using this approach over the previous one is that it simplifies
+the Pokemon.attack() method.
+
+For instance, we previously relied on multiple if-else statements to make the corresponding
+calculations. But after the changes, the logic was reduced to a few lines of code.

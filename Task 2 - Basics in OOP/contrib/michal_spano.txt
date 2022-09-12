@@ -1,0 +1,62 @@
+Group Work Assignment 2 - A2-Group 29
+=====================================
+
+Task 8 (Design) - Change Requests
+---------------------------------
+
+Initially, we used an `Enum`, namely `EffectiveAttack.java`, which included pairs of types,
+that would have an 'effective attack', hence multiplied by the factor of two in the following
+format: `attack: type` => `defender: type` such that the attacker produces an `effective attack`
+on the defender. Then, in the `attack` method found under `Pokemon.java`, we would observe
+the types of Pokemons, namely the type of the attacker and the defender. If such a relation
+is found under the `EffectiveAttack.java` `Enum`, we would regard this attack as 'effective',
+otherwise*, we observe an `ineffective attack`.
+
+*Indeed, we would also need to consider the case of the 'normal attack'. The above mentioned 
+procedure would only be carried if none of the specifications of the 'normal attack' are
+met (specified per the instructions of the assignment).
+
+However, this approach isn't applicable for the new requirements introduced in task 8, 
+since we previously only considered pairwise relations, whereas now, we need to consider 
+cases, where, e.g., a Pokemon of some type is effective against several Pokemon types, 
+similarly for the ineffective behavior. Therefore, we need to consider a more general approach, 
+which would allow us to specify such relations.
+
+With that in mind, the relations given by the table are easily represented with a two-dimensional
+array, i.e, a matrix of two dimensions. The first dimension (the rows) represent the types of the
+attacker, while the second dimension (the columns) represent the types of the defender. 
+We call the matrix `DAMAGE_MULTIPLIER_MATRIX` found under the `PokemonUtils` class. Moreover,
+we created an `Enum` - `PokemonTypes.java` - that assigns each Pokemon type an index that
+corresponds to the row/column of the `DAMAGE_MULTIPLIER_MATRIX` per the specified order in the 
+assignment instructions. For instance, [0] - BUG, [1] - DRAGON, and so forth. We may assume that 
+the index of the row (i.e., the attacker) and column (i.e., the defender) is the same for each type, 
+since the matrix has the same order of the types in the rows and columns.
+
+The method `getEffectiveValue` found under the `PokemonUtils` class, returns the value of the matrix
+at the given indices, i.e., the value of the matrix at the row corresponding to the type of the
+attacker and the column corresponding to the type of the defender, therefore returning the factor of 
+the attack relation. Lastly, we apply this factor to the damage dealt by the attacker. The 
+`getEffectiveValue` methods works as following: DAMAGE_MULTIPLIER_MATRIX[i][j] (given by the 
+two-dimensional) array, where i is the index of the attacker type and j is the index of the defender 
+type, thereby yielding the factor of the attack relation.
+
+Disadvantages of the previous implementation:
+---------------------------------------------
+
+- The `Enum` `EffectiveAttack.java` is rather limited, since it only allows pairwise relations, thereby
+  not being able to represent the new requirements of task 8.
+
+- Even though the `Enum` itself would be easier to read, it's limited behavior would require us to implement 
+  a more complex logic in the `attack` method found under `Pokemon.java`, which would, in the long run, be 
+  harder to comprehend and maintain.
+
+The main advantages of the new implementation are the following:
+---------------------------------------------------------------
+
+- The matrix is easily extendable/maintainable, since we only need to add a row with a column to the matrix, 
+  that is, a new array at an index of the matrix, which corresponds to the new type. Moreover, we only need to 
+  add the new type to the `PokemonTypes.java` `Enum`, which is also easily extendable. For instance, this is the
+  case of the 'normal' type, which was added in our implementation as the last type in the `Enum` and the last
+  row/column in the matrix (in order to prevent redundant conditional statements regarding the handling of the
+  'normal' type). 
+  

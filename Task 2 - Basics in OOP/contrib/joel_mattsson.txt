@@ -1,0 +1,64 @@
+Group Work Assignment 2 - A2-Group 29
+=====================================
+
+Task 8 (Design) - Change Request
+DM - Damage multiplier
+
+Before Task 8
+Before we encountered task 8 our mission was to determine the effectiveness of an attack with only four types, 
+where each type except ‘normal’ had one “super effective” attack, two “not very effective” and one normal attack. 
+We took advantage of this particular pattern which only applies to 4 types, in contrast to coming up with a general 
+solution that works for an unlimited number of pokemons. This advantage later turned into a disadvantage when the 
+specifications required our program to distinguish the effectiveness of an attack when taking 7 different types of 
+pokemons into consideration.
+
+We used the enum ‘EffectiveAttack.java’ to differentiate between the type-relationships affecting the DM. The advantage 
+with using an enum in this case is that it’s good for readability. For instance, a worse approach for solving the 
+4th task is declaring ‘the number of unique pokemon types’ String arrays that builds on the idea of:
+
+[0.5, 0.5, 2]: Check if index is 2, then DM = 2, else DM = 0.5 (if type isn’t ‘Normal’)
+
+String[] damageMultiplierOfFireType = [“fire”, “water”, “grass”]
+String[] damageMultiplierOfWaterType = [“water”, “grass”, “fire”]
+String[] damageMultiplierOfGrassType = [“grass”, “fire”, “water”]
+
+At the same time the program itself wouldn’t be as structured as it could be if you use enums in a separate file 
+because the arrays above are illustrating a general relation between every pokemon type. Therefore it shouldn’t 
+belong to Pokemon.java whose purpose is to only obtain information about a pokemon that we create as an object.
+
+After Task 8 - General Solution
+Unlike task 4, this task did not give us a possibility to capitalize on a pattern Even if the matrix of the DMs 
+given in task 8 would have a pattern (for instance the DM could have been 2.0 on every column-index greater than 1), 
+coding a solution that only takes this specific pattern will not serve us well in the future Since the specifications 
+never state that it is guaranteed that every pokemon’s DM would be a part of this pattern (a new type like Steel 
+could have DM 0.5 on column 3 and 4), problems will arise when we later on want to implement new types with DMs 
+whose values differs in the (index interval(s) / pattern).
+- (Pattern discovered in the first pokemon types’ DMs might not correspond with the new types we add in the future)
+
+Since that there's no general pattern for the DMs our idea before actually coding the solution was to use a data 
+structure that stores a sequence of DMs (order matters since the indices help us retrieve the DM of the attacking- 
+and target type) whose elements are manually set by us. In ‘PokemonUtils.java’ we declare a two dimensional array 
+‘DAMAGE_MULTIPLIER_MATRIX’. Each row in the n*n matrix where n is the number of unique pokemon types displays the 
+attacker’s DMs when attacking a pokemon of type X.
+
+In ‘PokemonUtils.java’ the method ‘computeEffectiveness()’ retrieves the attacker’s DM by first getting the types of 
+the attacker and target, and then calling ‘getEffectiveValue()’ from ‘PokemonUtils.java’ that returns a 
+float-value in the matrix at the specified row and column that is multiplied with the attacker’s “regular damage” 
+giving us the definitive damage of its attack.
+
+Both ‘DAMAGE_MULTIPLIER_MATRIX’ and getEffectiveValue() are functionalities defined in PokemonUtil.java, but why 
+aren’t they defined in a class called something among the lines of ‘PokemonTypesFunctionality’? It's true that 
+both of these are related to a functionality dependent on two pokemon types. In fact, they are only used to get 
+a pokemon’s DM in our code. Shouldn’t this be a strong indicator to name it to something more specific that 
+covers the area of usage?
+
+From another perspective, judging this from the potential desire of our customer requiring a change in the future, 
+a class with a wider range of functionalities would benefit us in the sense that if we would have separate classes 
+for every potential aspect our program, we would end up being disorganized with several different classes that only 
+contain a few lines of code. This doesn't only make it difficult to read the code, but also to develop it in the future, 
+considering you have to keep track of many classes with almost no behavior.
+
+In addition, we have three other static functions in PokemonUtils.java (truncateDouble(), isWithinBounds(), exceedingBound()), 
+which make ‘DAMAGE_MULTIPLIER_MATRIX’ and getEffectiveValue() appropriate attributes and methods in PokemonUtils.java. 
+Our conclusion is therefore that the best decision for us to make was to create a class with a more “general” abstraction 
+for the sake of the project’s structure.
